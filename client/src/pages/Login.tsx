@@ -16,7 +16,18 @@ export default function Login() {
         setLoading(true);
         try {
             await login(email, password);
-            navigate('/');
+            // Re-fetch user since AuthProvider state might not have updated yet in this tick
+            const stored = localStorage.getItem('aztech-auth');
+            if (stored) {
+                const { user } = JSON.parse(stored);
+                if (user.role === 'USER') {
+                    navigate('/price-check');
+                } else {
+                    navigate('/');
+                }
+            } else {
+                navigate('/');
+            }
         } catch (err: any) {
             Swal.fire({
                 icon: 'error',

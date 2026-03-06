@@ -13,7 +13,7 @@ import Categories from './pages/Categories';
 import Settings from './pages/Settings';
 
 export default function App() {
-    const { isAuthenticated, loading } = useAuth();
+    const { isAuthenticated, user, loading } = useAuth();
 
     if (loading) {
         return (
@@ -24,12 +24,14 @@ export default function App() {
         );
     }
 
+    const defaultPath = user?.role === 'USER' ? '/price-check' : '/';
+
     return (
         <Routes>
-            <Route path="/login" element={isAuthenticated ? <Navigate to="/" replace /> : <Login />} />
+            <Route path="/login" element={isAuthenticated ? <Navigate to={defaultPath} replace /> : <Login />} />
 
             <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-                <Route path="/" element={<Dashboard />} />
+                <Route path="/" element={user?.role === 'USER' ? <Navigate to="/price-check" replace /> : <Dashboard />} />
                 <Route path="/inventory" element={<ProtectedRoute roles={['ADMIN', 'INVENTORY_STAFF', 'STAFF']}><Inventory /></ProtectedRoute>} />
                 <Route path="/categories" element={<ProtectedRoute roles={['ADMIN', 'INVENTORY_STAFF', 'STAFF']}><Categories /></ProtectedRoute>} />
                 <Route path="/pos" element={<ProtectedRoute roles={['ADMIN', 'CASHIER', 'STAFF']}><POS /></ProtectedRoute>} />
@@ -39,7 +41,7 @@ export default function App() {
                 <Route path="/price-check" element={<PriceScanner />} />
             </Route>
 
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to={defaultPath} replace />} />
         </Routes>
     );
 }

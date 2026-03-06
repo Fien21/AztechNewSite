@@ -15,7 +15,8 @@ export default function ProtectedRoute({ children, roles }: Props) {
     }
 
     if (roles && user && !roles.includes(user.role)) {
-        return <Navigate to="/" replace />;
+        const defaultPath = user.role === 'USER' ? '/price-check' : '/';
+        return <Navigate to={defaultPath} replace />;
     }
 
     return <>{children}</>;
