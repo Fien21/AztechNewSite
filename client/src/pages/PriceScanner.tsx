@@ -27,7 +27,6 @@ export default function PriceScanner() {
         carouselTimeout: number;
         carouselEnabled: boolean;
         carouselImages: string[];
-        carouselClockPosition: 'top-right' | 'top-left' | 'center' | 'bottom-center';
         carouselImageFit: 'contain' | 'cover';
         carouselImageSize: number;
     }>({
@@ -35,7 +34,6 @@ export default function PriceScanner() {
         carouselSpeed: 5000,
         carouselTimeout: 30000,
         carouselEnabled: false,
-        carouselClockPosition: 'bottom-center',
         carouselImageFit: 'contain',
         carouselImageSize: 50
     });
@@ -104,9 +102,8 @@ export default function PriceScanner() {
                     carouselTimeout: data.carouselTimeout || 30000,
                     carouselEnabled: data.carouselEnabled === 1,
                     carouselImages: JSON.parse(data.carouselImages || '[]'),
-                    carouselClockPosition: data.carouselClockPosition || 'bottom-center',
                     carouselImageFit: data.carouselImageFit || 'contain',
-                    carouselImageSize: data.carouselImageSize || 100
+                    carouselImageSize: data.carouselImageSize || 50
                 });
             }
         } catch (err) {
@@ -245,42 +242,6 @@ export default function PriceScanner() {
                                             transition: 'all 0.4s ease-out'
                                         }}
                                     />
-                                    {/* Dynamic Clock Overlay */}
-                                    <div style={{
-                                        position: 'absolute',
-                                        background: 'rgba(0,0,0,0.6)',
-                                        color: 'white',
-                                        padding: '20px 40px',
-                                        borderRadius: '20px',
-                                        backdropFilter: 'blur(15px)',
-                                        border: '1px solid rgba(255,255,255,0.1)',
-                                        textAlign: 'center',
-                                        boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
-                                        transition: 'all 0.5s ease',
-                                        zIndex: 10,
-                                        ...(carouselSettings.carouselClockPosition === 'center' ? {
-                                            top: '50%',
-                                            left: '50%',
-                                            transform: 'translate(-50%, -50%)'
-                                        } : carouselSettings.carouselClockPosition === 'top-right' ? {
-                                            top: '50px',
-                                            right: '50px'
-                                        } : carouselSettings.carouselClockPosition === 'top-left' ? {
-                                            top: '50px',
-                                            left: '50px'
-                                        } : { // Default to bottom-center
-                                            bottom: '50px',
-                                            left: '50%',
-                                            transform: 'translateX(-50%)'
-                                        })
-                                    }}>
-                                        <div style={{ fontSize: '4.5rem', fontWeight: 900, lineHeight: 1, letterSpacing: '2px' }}>
-                                            {currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
-                                        </div>
-                                        <div style={{ fontSize: '1.4rem', color: 'rgba(255,255,255,0.7)', marginTop: '12px', textTransform: 'uppercase', fontWeight: 600 }}>
-                                            {currentTime.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-                                        </div>
-                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -306,17 +267,22 @@ export default function PriceScanner() {
                                 <h1 style={{ margin: 0 }}>Price Check</h1>
                                 <div style={{
                                     background: 'rgba(255,255,255,0.05)',
-                                    padding: '4px 12px',
-                                    borderRadius: '20px',
+                                    padding: '6px 16px',
+                                    borderRadius: '12px',
                                     border: '1px solid var(--border)',
-                                    fontSize: '0.9rem',
-                                    color: 'var(--text-secondary)',
                                     display: 'flex',
+                                    flexDirection: 'column',
                                     alignItems: 'center',
-                                    gap: '8px'
+                                    gap: '2px',
+                                    boxShadow: '0 4px 15px rgba(0,0,0,0.2)'
                                 }}>
-                                    <Clock size={16} />
-                                    {currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-light)', fontWeight: 800, fontSize: '1.1rem' }}>
+                                        <Clock size={16} />
+                                        {currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                                    </div>
+                                    <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
+                                        {currentTime.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}
+                                    </div>
                                 </div>
                             </div>
                             <p style={{ color: 'var(--text-muted)', marginTop: '5px' }}>Scan barcode or search by name (Ctrl+Shift+H for Kiosk)</p>

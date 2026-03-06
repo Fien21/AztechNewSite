@@ -10,7 +10,6 @@ interface SettingsData {
     carouselTimeout: number;
     carouselEnabled: boolean;
     carouselImages: string; // JSON string
-    carouselClockPosition: 'top-right' | 'top-left' | 'center' | 'bottom-center';
     carouselImageFit: 'contain' | 'cover';
     carouselImageSize: number;
 }
@@ -193,23 +192,7 @@ export default function Settings() {
                                 </div>
                             </div>
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '25px' }}>
-                                <div className="form-group">
-                                    <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', marginBottom: '8px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
-                                        <Clock size={14} /> Clock Position
-                                    </label>
-                                    <select
-                                        className="swal-mini-input"
-                                        value={settings.carouselClockPosition}
-                                        onChange={(e) => setSettings({ ...settings, carouselClockPosition: e.target.value as any })}
-                                        style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid var(--border)', background: 'rgba(0,0,0,0.2)', color: 'white' }}
-                                    >
-                                        <option value="center">Center</option>
-                                        <option value="top-right">Top Right</option>
-                                        <option value="top-left">Top Left</option>
-                                        <option value="bottom-center">Bottom Center</option>
-                                    </select>
-                                </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px', marginBottom: '25px' }}>
                                 <div className="form-group">
                                     <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', marginBottom: '8px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
                                         <ImageIcon size={14} /> Image Fit
@@ -315,7 +298,6 @@ export default function Settings() {
                                             slides={images}
                                             speed={settings.carouselSpeed}
                                             fit={settings.carouselImageFit}
-                                            clockPos={settings.carouselClockPosition}
                                             size={settings.carouselImageSize}
                                         />
                                     </div>
@@ -371,15 +353,13 @@ export default function Settings() {
 }
 
 // Small preview component logic
-function CarouselPreview({ slides, speed, fit, clockPos, size }: {
+function CarouselPreview({ slides, speed, fit, size }: {
     slides: string[],
     speed: number,
     fit: 'contain' | 'cover',
-    clockPos: 'top-right' | 'top-left' | 'center' | 'bottom-center',
     size: number
 }) {
     const [index, setIndex] = useState(0);
-    const [time, setTime] = useState(new Date());
 
     useEffect(() => {
         if (slides.length <= 1) return;
@@ -388,27 +368,6 @@ function CarouselPreview({ slides, speed, fit, clockPos, size }: {
         }, speed || 5000);
         return () => clearInterval(interval);
     }, [slides.length, speed]);
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setTime(new Date());
-        }, 1000);
-        return () => clearInterval(timer);
-    }, []);
-
-    const getClockStyle = (): React.CSSProperties => {
-        switch (clockPos) {
-            case 'center':
-                return { top: '50%', left: '50%', transform: 'translate(-50%, -50%)' };
-            case 'top-right':
-                return { top: '10px', right: '10px' };
-            case 'top-left':
-                return { top: '10px', left: '10px' };
-            case 'bottom-center':
-            default:
-                return { bottom: '10px', left: '50%', transform: 'translateX(-50%)' };
-        }
-    };
 
     return (
         <div style={{ width: '100%', height: '100%', position: 'relative', overflow: 'hidden' }}>
@@ -439,28 +398,6 @@ function CarouselPreview({ slides, speed, fit, clockPos, size }: {
                         />
                     </div>
                 ))}
-            </div>
-            {/* Mock Clock - Styled with Glassmorphism for Preview */}
-            <div style={{
-                position: 'absolute',
-                background: 'rgba(0,0,0,0.4)',
-                color: 'white',
-                padding: '8px 16px',
-                borderRadius: '10px',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(255,255,255,0.05)',
-                textAlign: 'center',
-                boxShadow: '0 8px 16px rgba(0,0,0,0.3)',
-                zIndex: 10,
-                transition: 'all 0.5s ease',
-                ...getClockStyle()
-            }}>
-                <div style={{ fontSize: '1.2rem', fontWeight: 900, lineHeight: 1 }}>
-                    {time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
-                </div>
-                <div style={{ fontSize: '0.5rem', color: 'rgba(255,255,255,0.6)', marginTop: '2px' }}>
-                    {time.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                </div>
             </div>
         </div>
     );
