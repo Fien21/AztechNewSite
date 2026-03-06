@@ -1,0 +1,6 @@
+--- Testing Product Query ---
+Query successful: [{"id":1,"name":"POSTER","serialNumber":null}]
+--- Testing Search with serialNumber ---
+Search successful: 0 results
+--- Testing Upsert with serialNumber ---
+Upsert successful: {"id":5,"name":"Diag Test Product","description":"","price":100,"discountPrice":null,"barcode":"DIAG_TEST_BARCODE","serialNumber":"DIAG_SN_123","imageUrl":null,"stockQty":10,"isBundle":false,"categoryId":1,"createdAt":"2026-03-04T03:08:59.050Z","isArchived":false}

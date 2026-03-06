@@ -1,0 +1,15 @@
+[2026-03-05T07:03:31.188Z] {
+  "message": "SQLITE_CONSTRAINT: UNIQUE constraint failed: Product.serialNumber",
+  "stack": "Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: Product.serialNumber",
+  "code": "SQLITE_CONSTRAINT"
+}
+[2026-03-05T07:09:16.526Z] {
+  "message": "SQLITE_CONSTRAINT: UNIQUE constraint failed: Product.serialNumber",
+  "stack": "Error: SQLITE_CONSTRAINT: UNIQUE constraint failed: Product.serialNumber",
+  "code": "SQLITE_CONSTRAINT"
+}
+[2026-03-05T07:27:09.065Z] CLEAR ERROR: {
+  "message": "SQLITE_IOERR: disk I/O error",
+  "stack": "Error: SQLITE_IOERR: disk I/O error",
+  "code": "SQLITE_IOERR"
+}
