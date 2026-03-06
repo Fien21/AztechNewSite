@@ -12,6 +12,7 @@ interface SettingsData {
     carouselImages: string; // JSON string
     carouselClockPosition: 'top-right' | 'top-left' | 'center' | 'bottom-center';
     carouselImageFit: 'contain' | 'cover';
+    carouselImageSize: number;
 }
 
 export default function Settings() {
@@ -225,6 +226,27 @@ export default function Settings() {
                                 </div>
                             </div>
 
+                            <div style={{ marginBottom: '25px', background: 'rgba(255,255,255,0.03)', padding: '15px', borderRadius: '10px', border: '1px solid var(--border)' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.85rem', marginBottom: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <Zap size={14} className="text-accent" /> Image Size Toggle
+                                    </div>
+                                    <span style={{ color: 'var(--accent-light)', fontWeight: 800 }}>{settings.carouselImageSize}%</span>
+                                </label>
+                                <input
+                                    type="range"
+                                    min="1"
+                                    max="100"
+                                    value={settings.carouselImageSize}
+                                    onChange={(e) => setSettings({ ...settings, carouselImageSize: parseInt(e.target.value) })}
+                                    style={{ width: '100%', accentColor: 'var(--accent)', cursor: 'pointer' }}
+                                />
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '8px' }}>
+                                    <span>Mini (1%)</span>
+                                    <span>Full (100%)</span>
+                                </div>
+                            </div>
+
                             <div className="image-management-section">
                                 <label style={{ fontSize: '0.9rem', fontWeight: 700, display: 'block', marginBottom: '15px', color: 'var(--text-secondary)' }}>Carousel Images</label>
                                 <div className="image-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(90px, 1fr))', gap: '12px' }}>
@@ -284,6 +306,7 @@ export default function Settings() {
                                         speed={settings.carouselSpeed}
                                         fit={settings.carouselImageFit}
                                         clockPos={settings.carouselClockPosition}
+                                        size={settings.carouselImageSize}
                                     />
                                 </div>
                             ) : (
@@ -334,11 +357,12 @@ export default function Settings() {
 }
 
 // Small preview component logic
-function CarouselPreview({ slides, speed, fit, clockPos }: {
+function CarouselPreview({ slides, speed, fit, clockPos, size }: {
     slides: string[],
     speed: number,
     fit: 'contain' | 'cover',
-    clockPos: 'top-right' | 'top-left' | 'center' | 'bottom-center'
+    clockPos: 'top-right' | 'top-left' | 'center' | 'bottom-center',
+    size: number
 }) {
     const [index, setIndex] = useState(0);
 
@@ -374,7 +398,24 @@ function CarouselPreview({ slides, speed, fit, clockPos }: {
                 transition: 'transform 0.8s ease-in-out'
             }}>
                 {slides.map((s, i) => (
-                    <img key={i} src={s} style={{ width: `${100 / slides.length}%`, height: '100%', objectFit: fit }} alt="preview" />
+                    <div key={i} style={{
+                        width: `${100 / slides.length}%`,
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}>
+                        <img
+                            src={s}
+                            style={{
+                                width: `${size}%`,
+                                height: `${size}%`,
+                                objectFit: fit,
+                                transition: 'all 0.3s ease'
+                            }}
+                            alt="preview"
+                        />
+                    </div>
                 ))}
             </div>
             {/* Mock Clock */}

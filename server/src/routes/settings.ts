@@ -17,8 +17,8 @@ router.get('/', authenticate, async (req: AuthRequest, res: Response): Promise<v
             await db.run(
                 `INSERT INTO Settings (
                     isPosOpen, carouselSpeed, carouselTimeout, carouselEnabled, 
-                    carouselImages, carouselClockPosition, carouselImageFit
-                ) VALUES (1, 5000, 30000, 0, '[]', 'bottom-center', 'contain')`
+                    carouselImages, carouselClockPosition, carouselImageFit, carouselImageSize
+                ) VALUES (1, 5000, 30000, 0, '[]', 'bottom-center', 'contain', 100)`
             );
             settings = await db.get<any>('SELECT * FROM Settings LIMIT 1');
         }
@@ -34,7 +34,7 @@ router.patch('/', authenticate, authorize('ADMIN', 'STAFF'), async (req: AuthReq
     try {
         const {
             isPosOpen, carouselSpeed, carouselTimeout, carouselEnabled,
-            carouselImages, carouselClockPosition, carouselImageFit
+            carouselImages, carouselClockPosition, carouselImageFit, carouselImageSize
         } = req.body;
 
         let settings = await db.get<any>('SELECT * FROM Settings LIMIT 1');
@@ -42,8 +42,8 @@ router.patch('/', authenticate, authorize('ADMIN', 'STAFF'), async (req: AuthReq
             await db.run(
                 `INSERT INTO Settings (
                     isPosOpen, carouselSpeed, carouselTimeout, carouselEnabled, 
-                    carouselImages, carouselClockPosition, carouselImageFit
-                ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                    carouselImages, carouselClockPosition, carouselImageFit, carouselImageSize
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     isPosOpen !== undefined ? (isPosOpen ? 1 : 0) : 1,
                     carouselSpeed !== undefined ? carouselSpeed : 5000,
@@ -51,7 +51,8 @@ router.patch('/', authenticate, authorize('ADMIN', 'STAFF'), async (req: AuthReq
                     carouselEnabled !== undefined ? (carouselEnabled ? 1 : 0) : 0,
                     carouselImages !== undefined ? carouselImages : '[]',
                     carouselClockPosition !== undefined ? carouselClockPosition : 'bottom-center',
-                    carouselImageFit !== undefined ? carouselImageFit : 'contain'
+                    carouselImageFit !== undefined ? carouselImageFit : 'contain',
+                    carouselImageSize !== undefined ? carouselImageSize : 100
                 ]
             );
         } else {
@@ -63,7 +64,8 @@ router.patch('/', authenticate, authorize('ADMIN', 'STAFF'), async (req: AuthReq
                     carouselEnabled = ?, 
                     carouselImages = ?,
                     carouselClockPosition = ?,
-                    carouselImageFit = ?
+                    carouselImageFit = ?,
+                    carouselImageSize = ?
                  WHERE id = ?`,
                 [
                     isPosOpen !== undefined ? (isPosOpen ? 1 : 0) : settings.isPosOpen,
@@ -73,6 +75,7 @@ router.patch('/', authenticate, authorize('ADMIN', 'STAFF'), async (req: AuthReq
                     carouselImages !== undefined ? carouselImages : settings.carouselImages,
                     carouselClockPosition !== undefined ? carouselClockPosition : settings.carouselClockPosition,
                     carouselImageFit !== undefined ? carouselImageFit : settings.carouselImageFit,
+                    carouselImageSize !== undefined ? carouselImageSize : settings.carouselImageSize,
                     settings.id
                 ]
             );

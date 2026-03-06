@@ -29,13 +29,15 @@ export default function PriceScanner() {
         carouselImages: string[];
         carouselClockPosition: 'top-right' | 'top-left' | 'center' | 'bottom-center';
         carouselImageFit: 'contain' | 'cover';
+        carouselImageSize: number;
     }>({
         carouselImages: [],
         carouselSpeed: 5000,
         carouselTimeout: 30000,
         carouselEnabled: false,
         carouselClockPosition: 'bottom-center',
-        carouselImageFit: 'contain'
+        carouselImageFit: 'contain',
+        carouselImageSize: 100
     });
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -103,7 +105,8 @@ export default function PriceScanner() {
                     carouselEnabled: data.carouselEnabled === 1,
                     carouselImages: JSON.parse(data.carouselImages || '[]'),
                     carouselClockPosition: data.carouselClockPosition || 'bottom-center',
-                    carouselImageFit: data.carouselImageFit || 'contain'
+                    carouselImageFit: data.carouselImageFit || 'contain',
+                    carouselImageSize: data.carouselImageSize || 100
                 });
             }
         } catch (err) {
@@ -226,12 +229,20 @@ export default function PriceScanner() {
                                 <div key={idx} style={{
                                     width: `${100 / carouselSettings.carouselImages.length}%`,
                                     height: '100%',
-                                    position: 'relative'
+                                    position: 'relative',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
                                 }}>
                                     <img
                                         src={img}
                                         alt={`Slide ${idx}`}
-                                        style={{ width: '100%', height: '100%', objectFit: carouselSettings.carouselImageFit }}
+                                        style={{
+                                            width: `${carouselSettings.carouselImageSize}%`,
+                                            height: `${carouselSettings.carouselImageSize}%`,
+                                            objectFit: carouselSettings.carouselImageFit,
+                                            transition: 'all 0.4s ease-out'
+                                        }}
                                     />
                                     {/* Dynamic Clock Overlay */}
                                     <div style={{
