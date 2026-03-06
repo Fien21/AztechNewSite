@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 interface User {
@@ -25,6 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const stored = localStorage.getItem(STORAGE_KEY);
@@ -84,10 +86,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setToken(null);
         localStorage.removeItem(STORAGE_KEY);
         delete axios.defaults.headers.common['Authorization'];
-        // Force redirect to login if not already there
-        if (window.location.pathname !== '/login') {
-            window.location.href = '/login';
-        }
+
+        // Use a slight delay for redirect to allow extension/background processes to settle
+        // This helps prevent the "message channel closed" console error
+        setTimeout(() => {
+            if (window.location.pathname !== '/login') {
+                navigate('/login', { replace: true });
+            }
+        }, 100);
     };
 
     return (

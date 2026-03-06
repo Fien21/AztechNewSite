@@ -18,7 +18,7 @@ router.get('/', authenticate, async (req: AuthRequest, res: Response): Promise<v
                 `INSERT INTO Settings (
                     isPosOpen, carouselSpeed, carouselTimeout, carouselEnabled, 
                     carouselImages, carouselClockPosition, carouselImageFit, carouselImageSize
-                ) VALUES (1, 5000, 30000, 0, '[]', 'bottom-center', 'contain', 100)`
+                ) VALUES (1, 5000, 30000, 0, '[]', 'bottom-center', 'contain', 50)`
             );
             settings = await db.get<any>('SELECT * FROM Settings LIMIT 1');
         }

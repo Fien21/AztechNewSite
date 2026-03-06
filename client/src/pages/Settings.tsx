@@ -292,22 +292,36 @@ export default function Settings() {
 
                             {images.length > 0 ? (
                                 <div style={{
-                                    width: '100%',
-                                    aspectRatio: '16/9',
-                                    background: '#000',
-                                    borderRadius: '15px',
-                                    overflow: 'hidden',
                                     position: 'relative',
+                                    height: '240px',
+                                    borderRadius: '12px',
+                                    overflow: 'hidden',
+                                    background: 'linear-gradient(135deg, #0d1929 0%, #152c4a 100%)', // Stylized scanner-like background
                                     border: '2px solid var(--border)',
                                     boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
                                 }}>
-                                    <CarouselPreview
-                                        slides={images}
-                                        speed={settings.carouselSpeed}
-                                        fit={settings.carouselImageFit}
-                                        clockPos={settings.carouselClockPosition}
-                                        size={settings.carouselImageSize}
-                                    />
+                                    {/* Glassmorphism Overlay Container */}
+                                    <div style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        left: 0,
+                                        width: '100%',
+                                        height: '100%',
+                                        background: 'rgba(13, 25, 41, 0.4)',
+                                        backdropFilter: 'blur(10px)',
+                                        zIndex: 1
+                                    }}>
+                                        <CarouselPreview
+                                            slides={images}
+                                            speed={settings.carouselSpeed}
+                                            fit={settings.carouselImageFit}
+                                            clockPos={settings.carouselClockPosition}
+                                            size={settings.carouselImageSize}
+                                        />
+                                    </div>
+                                    {/* Mock Scanner UI Background Elements */}
+                                    <div style={{ position: 'absolute', top: '20px', left: '20px', color: 'rgba(255,255,255,0.1)', fontSize: '0.6rem' }}>AZTECH POS SERVER</div>
+                                    <div style={{ position: 'absolute', bottom: '20px', right: '20px', color: 'rgba(255,255,255,0.1)', fontSize: '0.6rem' }}>scanner active...</div>
                                 </div>
                             ) : (
                                 <div style={{
@@ -365,6 +379,7 @@ function CarouselPreview({ slides, speed, fit, clockPos, size }: {
     size: number
 }) {
     const [index, setIndex] = useState(0);
+    const [time, setTime] = useState(new Date());
 
     useEffect(() => {
         if (slides.length <= 1) return;
@@ -373,6 +388,13 @@ function CarouselPreview({ slides, speed, fit, clockPos, size }: {
         }, speed || 5000);
         return () => clearInterval(interval);
     }, [slides.length, speed]);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setTime(new Date());
+        }, 1000);
+        return () => clearInterval(timer);
+    }, []);
 
     const getClockStyle = (): React.CSSProperties => {
         switch (clockPos) {
@@ -418,19 +440,27 @@ function CarouselPreview({ slides, speed, fit, clockPos, size }: {
                     </div>
                 ))}
             </div>
-            {/* Mock Clock */}
+            {/* Mock Clock - Styled with Glassmorphism for Preview */}
             <div style={{
                 position: 'absolute',
-                background: 'rgba(0,0,0,0.6)',
-                padding: '4px 8px',
-                borderRadius: '6px',
-                fontSize: '0.6rem',
+                background: 'rgba(0,0,0,0.4)',
                 color: 'white',
-                border: '1px solid rgba(255,255,255,0.1)',
+                padding: '8px 16px',
+                borderRadius: '10px',
+                backdropFilter: 'blur(8px)',
+                border: '1px solid rgba(255,255,255,0.05)',
+                textAlign: 'center',
+                boxShadow: '0 8px 16px rgba(0,0,0,0.3)',
                 zIndex: 10,
+                transition: 'all 0.5s ease',
                 ...getClockStyle()
             }}>
-                08:32 PM
+                <div style={{ fontSize: '1.2rem', fontWeight: 900, lineHeight: 1 }}>
+                    {time.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                </div>
+                <div style={{ fontSize: '0.5rem', color: 'rgba(255,255,255,0.6)', marginTop: '2px' }}>
+                    {time.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                </div>
             </div>
         </div>
     );

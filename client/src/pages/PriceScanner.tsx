@@ -37,7 +37,7 @@ export default function PriceScanner() {
         carouselEnabled: false,
         carouselClockPosition: 'bottom-center',
         carouselImageFit: 'contain',
-        carouselImageSize: 100
+        carouselImageSize: 50
     });
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -200,7 +200,8 @@ export default function PriceScanner() {
                         left: 0,
                         width: '100vw',
                         height: '100vh',
-                        background: '#000',
+                        background: 'rgba(13, 25, 41, 0.7)',
+                        backdropFilter: 'blur(20px)',
                         zIndex: 1000,
                         display: 'flex',
                         alignItems: 'center',
